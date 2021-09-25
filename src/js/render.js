@@ -1,6 +1,7 @@
 import * as basicLightbox from 'basiclightbox';
+import '../../node_modules/basiclightbox/dist/basicLightbox.min.css';
 
-import * as _ from 'lodash'; // почему устанавливаю lodash.debounce а подключается только через 'lodash'?
+// import debounce from 'lodash.debounce'; // почему устанавливаю lodash.debounce а подключается только через 'lodash'?
 
 import { alert, error, defaultModules } from '@pnotify/core/dist/PNotify.js';
 import * as PNotifyMobile from '@pnotify/mobile/dist/PNotifyMobile.js';
@@ -22,42 +23,14 @@ const { form, list } = refs;
 
 import template from '../templates/template.hbs';
 
-//Для того чтобы корректно работал плавный скролл необходимо
-//  зафиксировать высоту карточки.
-
-// Отправляем запрос по submit (кнопка подойдет прекрасно)
-
-// Кнопку "Load more" не нужно показывать когда картинок меньше или 12,
-//  а также когда картинки закончились
-
-// Запрос не должен отправляться при при пустой строке ввода
-// (или если просто использует пробел)
-
-// Будет прекрасно, если немного добавите оформления
-// - это всё - таки финальная работа.Да и вёрстку пора вспоминать
-//  накануне финального проекта
-
 form.addEventListener('submit', onSearch);
 
 loadMoreBtn.refs.button.addEventListener('click', fetchPhotos);
 
-// const element = document.getElementById('.my-element-selector');
-// element.scrollIntoView({
-//   behavior: 'smooth',
-//   block: 'end',
-// });
-
-// loadMoreBtn.refs.button.addEventListener('click', () => {
-//   window.scrollTo({
-//     top: document.documentElement.offsetHeight,
-//     behavior: 'smooth',
-//   });
-// });
-
 async function onSearch(e) {
   e.preventDefault();
 
-  apiService.query = e.target.elements.search.value;
+  apiService.query = e.target.elements.search.value.trim();
   if (apiService.query === '' || apiService.query === ' ') {
     return alert({
       text: `Введите запрос`,
@@ -69,6 +42,7 @@ async function onSearch(e) {
   clearArticlesContainer();
 
   fetchPhotos();
+  form.reset();
 }
 
 async function createMarkUp(array) {
@@ -93,9 +67,17 @@ async function fetchPhotos() {
 
     createMarkUp(articles.hits);
     loadMoreBtn.enable();
+    scrollList();
   } catch (error) {
     console.log(error);
   }
+}
+
+function scrollList() {
+  list.scrollIntoView({
+    behavior: 'smooth',
+    block: 'end',
+  });
 }
 
 function clearArticlesContainer() {
