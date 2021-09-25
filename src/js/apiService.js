@@ -14,9 +14,10 @@ export default class ApiService {
 
     const response = await fetch(BASE_URL + endPoint + params);
     const data = await response.json();
+
     this.incrementPage();
 
-    return data.hits;
+    return data;
   }
 
   incrementPage() {

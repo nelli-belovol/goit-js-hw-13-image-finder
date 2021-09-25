@@ -38,12 +38,20 @@ import template from '../templates/template.hbs';
 //  накануне финального проекта
 
 form.addEventListener('submit', onSearch);
+
 loadMoreBtn.refs.button.addEventListener('click', fetchPhotos);
 
 // const element = document.getElementById('.my-element-selector');
 // element.scrollIntoView({
 //   behavior: 'smooth',
 //   block: 'end',
+// });
+
+// loadMoreBtn.refs.button.addEventListener('click', () => {
+//   window.scrollTo({
+//     top: document.documentElement.offsetHeight,
+//     behavior: 'smooth',
+//   });
 // });
 
 async function onSearch(e) {
@@ -64,31 +72,59 @@ async function onSearch(e) {
 }
 
 async function createMarkUp(array) {
-  //   const divs = document.getElementsByClassName('scroll-element');
-  //   divs.classList.remove('scroll-element');
-  const newDiv = document.createElement('div');
-  newDiv.classList.add('my-element-selector');
   const items = template(array);
-  newDiv.insertAdjacentHTML('beforeend', items);
-  list.append(newDiv);
+  list.insertAdjacentHTML('beforeend', items);
 }
 
 async function fetchPhotos() {
   loadMoreBtn.disable();
   try {
     const articles = await apiService.fetchArticles();
-    createMarkUp(articles);
-  } catch (error) {
-    if (articles.length === 0) {
+
+    if (articles.total === 0) {
       error({
         text: `По Вашему запросу ничего не найдено`,
       });
     }
+
+    if (articles.total <= 12 || articles.hits.length < 12) {
+      loadMoreBtn.hide();
+    }
+
+    createMarkUp(articles.hits);
+    loadMoreBtn.enable();
+  } catch (error) {
     console.log(error);
   }
-  loadMoreBtn.enable();
 }
 
 function clearArticlesContainer() {
   list.innerHTML = '';
+}
+
+const instance = basicLightbox.create(`
+    <img src="#" width="800" height="600">
+`);
+
+list.addEventListener('click', openModal);
+let currentImg;
+
+function openModal(e) {
+  currentImg = e.target;
+  if (currentImg.nodeName === 'IMG') {
+    e.preventDefault();
+    const url = currentImg.dataset.source;
+    console.log(url);
+    instance.show();
+    const lightBoxImage = document.querySelector('.basicLightbox__placeholder img');
+    console.log(lightBoxImage);
+    lightBoxImage.setAttribute('src', url);
+  }
+  window.addEventListener('keydown', closeModalByKey);
+}
+
+function closeModalByKey(e) {
+  if (e.code === 'Escape') {
+    instance.close();
+  }
 }
