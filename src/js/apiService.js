@@ -1,11 +1,10 @@
 const API_KEY = '23491087-4191226b82b28486631b9987a';
-const BASE_URL = 'https://pixabay.com/';
-const endPoint = 'api/';
+const BASE_URL = 'https://pixabay.com/api/';
+
 const quantity = 12;
 
-// import axios from 'axios';
-
-// axios.defaults.baseUrl = BASE_URL;
+import axios from 'axios';
+axios.defaults.baseURL = BASE_URL;
 
 export default class ApiService {
   constructor() {
@@ -16,12 +15,11 @@ export default class ApiService {
   async fetchArticles(query) {
     const params = `?image_type=photo&orientation=horizontal&q=${this.searchQuery}&page=${this.page}&per_page=${quantity}&key=${API_KEY}`;
 
-    const response = await fetch(BASE_URL + endPoint + params);
-    const data = await response.json();
+    const response = await axios.get(params);
 
     this.incrementPage();
-
-    return data;
+    console.log(response.data);
+    return response.data;
   }
 
   incrementPage() {
