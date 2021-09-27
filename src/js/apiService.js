@@ -18,7 +18,7 @@ export default class ApiService {
     const response = await axios.get(params);
 
     this.incrementPage();
-    console.log(response.data);
+
     return response.data;
   }
 
