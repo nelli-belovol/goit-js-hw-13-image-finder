@@ -74,7 +74,6 @@ async function createMarkUp(array) {
 async function fetchPhotos() {
   try {
     const articles = await apiService.fetchArticles();
-    observer.observe(list);
 
     if (articles.total === 0) {
       error({
@@ -87,6 +86,7 @@ async function fetchPhotos() {
     }
 
     createMarkUp(articles.hits);
+    observer.observe(document.querySelector('li:last-child'));
   } catch (error) {
     console.log(error);
   }
