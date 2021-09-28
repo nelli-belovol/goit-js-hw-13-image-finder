@@ -86,10 +86,10 @@ async function fetchPhotos() {
     }
 
     createMarkUp(articles.hits);
-    observer.observe(document.querySelector('li:last-child'));
   } catch (error) {
     console.log(error);
   }
+  observer.observe(document.querySelector('li:last-child'));
 }
 
 function clearArticlesContainer() {
