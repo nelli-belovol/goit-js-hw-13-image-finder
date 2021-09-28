@@ -62,7 +62,7 @@ async function onSearch(e) {
   apiService.resetPage();
   clearArticlesContainer();
   fetchPhotos();
-
+observer.observe(document.querySelector('li:last-child'));
   form.reset();
 }
 
@@ -86,7 +86,7 @@ async function fetchPhotos() {
     }
 
     createMarkUp(articles.hits);
-    observer.observe(document.querySelector('li:last-child'));
+    
   } catch (error) {
     console.log(error);
   }
