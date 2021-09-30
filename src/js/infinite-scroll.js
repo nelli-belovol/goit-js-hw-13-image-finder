@@ -26,9 +26,10 @@ import template from '../templates/template.hbs';
 
 // настройки
 let options = {
-  rootMargin: '5px',
+  rootMargin: '150px',
   threshold: 0.5,
 };
+const observer = new IntersectionObserver(onEntry, options);
 
 // функция обратного вызова
 function onEntry(entries, observer) {
@@ -36,20 +37,18 @@ function onEntry(entries, observer) {
     if (entry.isIntersecting) {
       fetchPhotos();
       //   console.log(entry.target);
-      observer.unobserve(entry.target);
-      observer.observe(document.querySelector('li:last-child'));
+      //   observer.unobserve(entry.target);
+      observer.observe(document.querySelector('.observer-container'));
     }
   });
 }
 
 // наблюдатель
 
-const observer = new IntersectionObserver(onEntry, options);
-
 //------------------------------------------------------------------------------
 form.addEventListener('submit', onSearch);
 
-async function onSearch(e) {
+function onSearch(e) {
   e.preventDefault();
 
   apiService.query = e.target.elements.search.value.trim();
@@ -66,7 +65,7 @@ async function onSearch(e) {
   form.reset();
 }
 
-async function createMarkUp(array) {
+function createMarkUp(array) {
   const items = template(array);
   list.insertAdjacentHTML('beforeend', items);
 }
@@ -74,7 +73,7 @@ async function createMarkUp(array) {
 async function fetchPhotos() {
   try {
     const articles = await apiService.fetchArticles();
-
+    console.log(apiService.pageNumber);
     if (articles.total === 0) {
       error({
         text: `По Вашему запросу ничего не найдено`,

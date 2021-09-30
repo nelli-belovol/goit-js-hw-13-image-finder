@@ -22,6 +22,9 @@ export default class ApiService {
     return response.data;
   }
 
+  get pageNumber() {
+    return this.page;
+  }
   incrementPage() {
     this.page += 1;
   }
